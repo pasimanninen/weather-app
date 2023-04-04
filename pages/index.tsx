@@ -57,7 +57,7 @@ export const getServerSideProps: GetServerSideProps<{ weatherInfo: WeatherInfo, 
   const weatherRequest = await fetch(url);
   const weatherInfo = await weatherRequest.json();
   //console.log('city', city);
-  //console.log('weatherInfo', weatherInfo);
+  console.log('weatherInfo', weatherInfo);
 
   return { props: { weatherInfo, city } };
 };
