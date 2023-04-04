@@ -3,6 +3,7 @@ import { InferGetServerSidePropsType } from 'next'
 import { format } from 'date-fns'
 
 import Head from 'next/head'
+import Image from 'next/image'
 import styles from '@/styles/Home.module.css'
 
 export default function Home({ weatherInfo, city }
@@ -21,7 +22,12 @@ export default function Home({ weatherInfo, city }
           <p>{format(new Date(), 'dd.MM.yyyy hh:mm')}</p>
           <p>{Math.round(weatherInfo.main.temp)}°C</p>
           <p>{weatherInfo.weather[0].description}</p>
-          <img src={`http://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png`}/>
+          <Image 
+            src={`http://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png`} 
+            alt="weather icon"
+            width={100}
+            height={100}
+          />
         </div>
       </main>
     </>
@@ -50,10 +56,10 @@ export const getServerSideProps: GetServerSideProps<{ weatherInfo: WeatherInfo, 
   const url = `http://api.openweathermap.org/data/2.5/weather?q=${city},&appid=${api_key}&units=metric`;
   const weatherRequest = await fetch(url);
   const weatherInfo = await weatherRequest.json();
-  console.log('city', city);
-  console.log('weatherInfo', weatherInfo);
+  //console.log('city', city);
+  //console.log('weatherInfo', weatherInfo);
 
   return { props: { weatherInfo, city } };
 };
 
-// token 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
+// token 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
