@@ -1,66 +1,34 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import styles from './page.module.css'
+import { format } from 'date-fns'
 
-export default function Home() {
+async function getData() {
+  const city = 'Jyväskylä';
+  const api_key = process.env.OPENWEATHER_API_KEY;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api_key}&units=metric`;
+  const weatherRequest = await fetch(url);
+  const weatherInfo = await weatherRequest.json();
+
+  if (!weatherRequest.ok) {
+    throw new Error('Failed to fetch data');
+  }
+
+  return { weatherInfo, city };
+}
+
+export default async function Home() {
+  const data = await getData();
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className={styles.main}>
+      <div className={styles.center}>
+        <h1>{data.city}</h1>
+        <p>{format(new Date(), 'dd.MM.yyyy HH:mm')}</p>
+        <p>{Math.round(data.weatherInfo.main.temp)}°C</p>
+        <p>{data.weatherInfo.weather[0].description}</p>
+        <img
+          src={`https://openweathermap.org/img/wn/${data.weatherInfo.weather[0].icon}@2x.png`}
+          alt={data.weatherInfo.weather[0].description}
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
